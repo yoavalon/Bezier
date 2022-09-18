@@ -185,29 +185,36 @@ class DslBezier :
         #[3,7,1,2,2] curve
 
         instructions = np.split(feat, int(len(feat)/5))
-    
+        instructions = np.array(instructions)
+
+        #overwrite instructions to initialize program with reposition
+        instructions[:,0][0] = 0.25
+
         first = True
         for inst in instructions : 
-            if first : 
-                inst[0] = 0
-                first = False
-            if int(4*inst[0]) == 0 : 
+            #if first : 
+            #    inst[0] = 0.25
+            #    first = False
+            if np.round(4*inst[0]) == 0 : 
                 pass 
-            elif int(4*inst[1]) == 1 : 
+            elif np.round(4*inst[0]) == 1 : 
                 ref = [1,3,3,0,0]
                 norm = inst*ref
                 norm = np.round(norm)
                 self.position_pen(int(norm[1]),int(norm[2]))
-            elif int(4*inst[1]) == 2 : 
+                #print('position')
+            elif np.round(4*inst[0]) == 2 : 
                 ref = [2,7,2,0,0]
                 norm = inst*ref
                 norm = np.round(norm)                
                 self.straight_line(Direction(self.Direction_list[int(norm[1])]), Length(self.Length_list[int(norm[2])]))                
-            elif int(4*inst[1]) == 3 : 
+                #print('straight')
+            elif np.round(4*inst[0]) == 3 : 
                 ref = [3,7,1,2,2]
                 norm = inst*ref
                 norm = np.round(norm)
                 self.curve(Direction(self.Direction_list[int(norm[1])]), Orient(self.Orient_list[int(norm[2])]), Length(self.Length_list[int(norm[3])]), Radius(self.Radius_list[int(norm[4])]))
+                #print('curve')
 
     def _convert(self, feat) : 
         """
@@ -225,35 +232,57 @@ class DslBezier :
         lines.append('')
 
         instructions = np.split(feat, int(len(feat)/5))
+        instructions = np.array(instructions)
+
+        #overwrite instructions to initialize program with reposition
+        instructions[:,0][0] = 0.25
+
+        #print(instructions)
+        #print(len(instructions))
+
+        #Filter double reposition instructions
+        a = np.round(4*instructions[:,0])
+        #print(4*instructions[:,0])
+        #print(a)
+        res = [a[i] == 1 and a[i] == a[i+1] for i in range(len(a)-1)]
+        #print(res)
+        res.insert(-1, False)
+        instructions = instructions[np.where(np.array(res)==False)]
     
-        first = True
+        #print(len(instructions))
+        #print(instructions)
+
+        #first = True
         for inst in instructions : 
-            if first : 
-                inst[0] = 0.25
-                first = False
+            #if first : 
+            #    inst[0] = 0.25
+            #    first = False
 
             #print(4*inst[0])
 
-            if int(4*inst[0]) == 0 : 
+            if np.round(4*inst[0]) == 0 : 
                 pass 
-            elif int(4*inst[0]) == 1 : 
+            elif np.round(4*inst[0]) == 1 : 
                 ref = [1,3,3,0,0]
                 norm = inst*ref
                 norm = np.round(norm)
                 #self.position_pen(int(norm[1]),int(norm[2]))
                 lines.append(f'd.position_pen({int(norm[1])},{int(norm[2])})')
-            elif int(4*inst[0]) == 2 : 
+                #print('__position')
+            elif np.round(4*inst[0]) == 2 : 
                 ref = [2,7,2,0,0]
                 norm = inst*ref
                 norm = np.round(norm)                
                 #self.straight_line(Direction(self.Direction_list[int(norm[1])]), Length(self.Length_list[int(norm[2])]))                
                 lines.append(f'd.straight_line(Direction.{Direction(self.Direction_list[int(norm[1])]).name}, Length.{Length(self.Length_list[int(norm[2])]).name})')
-            elif int(4*inst[0]) == 3 : 
+                #print('__straight')
+            elif np.round(4*inst[0]) == 3 : 
                 ref = [3,7,1,2,2]
                 norm = inst*ref
                 norm = np.round(norm)
                 #self.curve(Direction(self.Direction_list[int(norm[1])]), Orient(self.Orient_list[int(norm[2])]), Length(self.Length_list[int(norm[3])]), Radius(self.Radius_list[int(norm[4])]))
                 lines.append(f'd.curve(Direction.{Direction(self.Direction_list[int(norm[1])]).name}, Orient.{Orient(self.Orient_list[int(norm[2])]).name}, Length.{Length(self.Length_list[int(norm[3])]).name}, Radius.{Radius(self.Radius_list[int(norm[4])]).name})')
+                #print('__curve')
 
         lines.append('')
         lines.append('d.end()')

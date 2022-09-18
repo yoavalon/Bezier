@@ -62,7 +62,17 @@ for i in range(1000000) :
     norm = res/np.sum(res)
     
     maxInd = np.argmax(norm)
+
+    '''
+    lines = d._convert(feat)
+    for line in lines : 
+        print(line)
+    d.visualize()
+    '''
+
+
     if norm[maxInd] > 0.95 :
+
         name = f'{maxInd}_{norm[maxInd]:0.3f}'
         d._save(name)
         lines = d._convert(feat)
