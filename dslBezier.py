@@ -81,8 +81,11 @@ class DslBezier :
         input: (4,4)  
         """
 
-        a = np.random.randint(7*y, 7*(y+1))
-        b = np.random.randint(7*x, 7*(x+1))
+        #a = np.random.randint(7*y, 7*(y+1))
+        #b = np.random.randint(7*x, 7*(x+1))
+        
+        a = 7*y+3
+        b = 7*x+3
 
         self.position = np.array([b,a])
         
@@ -111,10 +114,12 @@ class DslBezier :
         middle = (self.position + target)/2
         middle = middle.astype(np.int32)
 
+        '''
         #add random factor to middle and target point 
         ran = np.random.randint(-2,2, size=(2,2))
         target += ran[0]
         middle += ran[1]
+        '''
 
         rr, cc = bezier_curve(self.position[0],self.position[1], middle[0], middle[1], target[0], target[1] ,3)
         xs, ys = self.__cut(rr, cc)
@@ -151,10 +156,12 @@ class DslBezier :
         middle += radius.value*dist
         middle = middle.astype(np.int32)
 
+        '''
         #add random
         ran = np.random.randint(-2,2, size=(2,2))
         target += ran[0]
         middle += ran[1]
+        '''
 
         rr, cc = bezier_curve(self.position[0],self.position[1], middle[0], middle[1], target[0], target[1] ,3)
 
