@@ -296,12 +296,12 @@ class DslBezier :
     def _save(self, name) : 
         #np.save(f'./imgs/{name}' ,self.canvas)
         plt.imshow(self.canvas, cmap = 'bone')
-        plt.savefig(f'./imgs/{name}.png')
+        plt.savefig(f'./imgs_quickDraw/{name}.png')
         plt.close()
 
     def _saveProgram(self, lines, name) : 
     
-        with open(f'./imgs/{name}.py', 'w') as f : 
+        with open(f'./imgs_quickDraw/{name}.py', 'w') as f : 
             #f.writelines(lines)
             for line in lines : 
                 f.write(line+'\n')
