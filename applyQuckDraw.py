@@ -71,7 +71,7 @@ for i in range(1000000) :
     '''
 
 
-    if norm[maxInd] > 0.8 :
+    if norm[maxInd] > 0.9 :
 
         name = f'{maxInd}_{norm[maxInd]:0.3f}'
         d._save(name)
